@@ -15,12 +15,6 @@ import { RouterLink, RouterView } from 'vue-router'
       <img src="@/assets/github.svg" alt="github<" width="15" height="15" />
       <img src="@/assets/mode.svg" alt="mode" width="15" height="15" />
     </div>
-    <!-- <div class="wrapper">
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div> -->
   </header>
 
   <RouterView />
