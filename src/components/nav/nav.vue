@@ -11,7 +11,9 @@ import { RouterLink, RouterView } from 'vue-router'
     </div>
     <div class="connection">
       <button>S'inscrire</button>
-      <button>Se connecter</button>
+      <button class="login">Se connecter</button>
+      <img src="@/assets/github.svg" alt="github<" width="15" height="15" />
+      <img src="@/assets/mode.svg" alt="mode" width="15" height="15" />
     </div>
     <!-- <div class="wrapper">
       <nav>
@@ -54,6 +56,7 @@ header {
 .connection {
   display: flex;
   gap: 1rem;
+  align-items: center;
 
   button {
     padding: 0.5rem 1rem;
@@ -62,6 +65,13 @@ header {
     background-color: #131112;
     color: #F7F7FF;
     padding: 0.5rem 1.5rem;
+    cursor: pointer;
+
+    &.login {
+      border: 1px solid #DEE6EF;
+      background-color: transparent;
+      color: #131112;
+    }
   }
 }
 
