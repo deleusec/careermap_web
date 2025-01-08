@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-
 </script>
 
 <template>
@@ -16,8 +14,6 @@ import { RouterLink, RouterView } from 'vue-router'
       <img src="@/assets/mode.svg" alt="mode" width="15" height="15" />
     </div>
   </header>
-
-  <RouterView />
 </template>
 
 <style scoped>

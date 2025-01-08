@@ -1,18 +1,13 @@
-<template>
-  <div id="app">
-    <Tree />
-  </div>
-</template>
-
-<script>
-import Tree from '@/components/tree.vue';
-
-export default {
-  components: {
-    Tree
-  }
-};
+<script setup lang="ts">
+import AppLayout from '@/components/layouts/AppLayout.vue';
+import TreeApp from '@/components/TreeApp.vue'
 </script>
+
+<template>
+  <AppLayout>
+    <TreeApp />
+  </AppLayout>
+</template>
 
 <style>
 body {
