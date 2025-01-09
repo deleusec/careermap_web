@@ -11,7 +11,7 @@
         type="text"
         v-model="searchQuery"
         placeholder="Recherche un métier, une formation ou une catégorie..."
-        class="w-[600px] pr-10 pl-3 py-2 border border-foreground rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        class="w-[600px] pr-10 pl-3 py-2 border border-foreground rounded-md leading-5 bg-transparent placeholder-text-secondary focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
         @input="handleSearch"
       >
     </div>

@@ -30,7 +30,7 @@ export default {
         // Text colors
         'text': 'var(--text)',
         'text-foreground': 'var(--text-foreground)',
-
+        'text-secondary': 'var(--text-secondary)',
         // Border colors
         'border': 'var(--border)',
         'border-foreground': 'var(--border-foreground)',

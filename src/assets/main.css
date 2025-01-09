@@ -19,6 +19,7 @@
 
     --text: #000000;
     --text-foreground: #ffffff;
+    --text-secondary: #4A5569;
     
     --border: #DEE6EF;
     --border-foreground: #102031;
@@ -44,6 +45,7 @@
 
     --text: #ffffff;
     --text-foreground: #000000;
+    --text-secondary: #DEE6EF;
     
     --border: #102031;
     --border-foreground: #DEE6EF;
