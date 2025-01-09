@@ -2,6 +2,7 @@
 import { onBeforeMount } from 'vue'
 import { useThemeStore } from '@/stores/themeStore';
 import NavbarApp from '../NavbarApp.vue';
+import AppFooter from '../AppFooter.vue';
 
 const themeStore = useThemeStore()
 
@@ -11,16 +12,18 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div>
+  <div class="relative">
+    <div>
+      <img src="@/assets/images/home-top-gradient.png" alt="Home top gradient" class="absolute top-0 left-0 w-full -z-10 object-cover pointer-events-none" />
+    </div>
+
     <NavbarApp />
 
-    <main>
+    <main class="min-h-screen">
       <slot />
     </main>
 
-    <footer>
-      <p>© 2021 CareerMap</p>
-    </footer>
+    <AppFooter />
   </div>
 </template>
 
