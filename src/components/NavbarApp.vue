@@ -13,7 +13,7 @@ const toggleTheme = () => {
 </script>
 
 <template>
-  <header class="w-full h-[60px] bg-background flex justify-between items-center px-12 border-b border-border-foreground">
+  <header class="w-full h-[60px] bg-background flex justify-between items-center px-12 border-b border-border">
     <div class="flex items-center gap-4">
       <LogoIcon class="w-8 h-8" />
       <p class="font-medium text-xl">CareerMap</p>
