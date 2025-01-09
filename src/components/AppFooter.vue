@@ -1,27 +1,30 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+const currentYear = ref(new Date().getFullYear())
+</script>
+
 <template>
-  <footer class="bg-zinc-900 py-16 px-4">
+  <footer class="bg-foreground py-16 px-4">
     <div class="max-w-7xl mx-auto">
       <!-- Newsletter Section -->
       <div class="text-left justify-center gap-64 mx-auto mb-16 flex items-center">
         <div class="">
-          <h2 class="text-white text-3xl font-medium mb-2">
-            Restez connectés avec nous
-          </h2>
-          <p class="text-gray-400">
-            Toutes les actualités Careermap, directement par mail.
-          </p>
+          <h2 class="text-text-foreground text-3xl font-medium mb-2">Restez connectés avec nous</h2>
+          <p class="text-text-foreground">Toutes les actualités Careermap, directement par mail.</p>
         </div>
         <!-- Email Form -->
         <div class="w-80 max-h-10 flex">
           <input
             type="email"
             placeholder="Adresse mail"
-            class="flex-1 px-4 py-2 rounded-l-full bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:border-white"
+            class="flex-1 px-4 py-2 rounded-l-full bg-foreground text-border border border-border focus:outline-none focus:border-border"
           />
-          <button class="bg-zinc-800 px-6 py-2 rounded-r-full border border-l-0 border-zinc-700">
+          <button
+            class="bg-zinc-800 px-6 py-2 rounded-r-full border border-l-transparent border-border"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-2 w-5 text-white"
+              class="h-5 w-5 text-border"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -36,20 +39,9 @@
       </div>
 
       <!-- Copyright -->
-      <div class="text-center text-gray-500 text-sm">
+      <div class="text-center text-text-foreground text-sm">
         Released under the MIT License. (e1b520c4) - Copyright © {{ currentYear }}
       </div>
     </div>
   </footer>
 </template>
-
-<script>
-export default {
-  name: 'Footer',
-  computed: {
-    currentYear() {
-      return new Date().getFullYear()
-    }
-  }
-}
-</script>

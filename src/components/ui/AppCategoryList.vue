@@ -6,10 +6,10 @@ interface Roadmap {
   category: string
   image: string
 }
-defineProps({
-  roadmaps: Roadmap[]
-})
 
+defineProps<{
+  roadmaps: Roadmap[]
+}>()
 </script>
 
 <template>
