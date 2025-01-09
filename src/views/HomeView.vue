@@ -39,8 +39,8 @@ const onSearch = (query: string) => {
       <div
         class="py-12 relative w-full h-full min-h-[calc(100vh-60px)] flex flex-col items-center justify-start"
       >
-        <div class="w-full z-10 flex flex-col gap-[250px] relative">
-          <LinesTreeIcon class="w-[50%] self-center" />
+        <div class="w-full z-10 flex flex-col gap-[150px] relative">
+          <LinesTreeIcon class="w-[40%] self-center" />
           <img
             src="@/assets/images/gradients.png"
             class="w-[100%] top-1/2 absolute z-0 -translate-y-1/2 dark:opacity-50"
