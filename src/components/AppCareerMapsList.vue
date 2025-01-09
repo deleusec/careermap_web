@@ -90,7 +90,7 @@ const goToRoadmap = (id: number) => {
                   v-for="entity in category.entities"
                   :key="entity.id"
                   @click="goToRoadmap(entity.id)"
-                  class="cursor-pointer hover:underline text-primary mt-2"
+                  class="cursor-pointer hover:underline text-text-foreground mt-2"
                 >
                   <strong>{{ entity.name }}</strong>
                   <p class="text-sm text-gray-400">{{ entity.description }}</p>
