@@ -7,7 +7,7 @@
       {{ error }}
     </div>
     <div v-else>
-      <h1 class="text-2xl mb-4">{{ graphData.name }}</h1>
+      <h1 class="text-2xl mb-4">{{ graphData?.name }}</h1>
       <AppTree
         :data="transformedData"
         :node-width="150"
@@ -34,7 +34,7 @@ interface Node {
   type: string
   name: string
   description: string
-  additionalInfo: Record<string, any>
+  additionalInfo: Record<string, string | number | boolean>
   category: Category
   parents: Node[]
   children: Node[]
@@ -46,13 +46,13 @@ const loading = ref(true)
 const error = ref<string | null>(null)
 
 // Fonction récursive pour extraire tous les nœuds
-const extractNodes = (node: Node): any[] => {
-  const nodes: any[] = [{
+const extractNodes = (node: Node): { id: string; label: string; color: string }[] => {
+  const nodes: { id: string; label: string; color: string }[] = [{
     id: node.id.toString(),
     label: node.name,
     color: getColorByType(node.type)
   }]
-  
+
   const processNodes = (n: Node) => {
     if (n.children) {
       n.children.forEach(child => {
@@ -75,15 +75,15 @@ const extractNodes = (node: Node): any[] => {
       })
     }
   }
-  
+
   processNodes(node)
   return [...new Map(nodes.map(n => [n.id, n])).values()]
 }
 
 // Fonction récursive pour extraire tous les liens
-const extractLinks = (node: Node): any[] => {
-  const links: any[] = []
-  
+const extractLinks = (node: Node): { source: string; target: string; }[] => {
+  const links: { source: string; target: string; }[] = []
+
   const processLinks = (n: Node) => {
     if (n.children) {
       n.children.forEach(child => {
@@ -104,7 +104,7 @@ const extractLinks = (node: Node): any[] => {
       })
     }
   }
-  
+
   processLinks(node)
   return links
 }
@@ -120,7 +120,7 @@ const getColorByType = (type: string): string => {
 
 const transformedData = computed(() => {
   if (!graphData.value) return { nodes: [], links: [] }
-  
+
   return {
     nodes: extractNodes(graphData.value),
     links: extractLinks(graphData.value)
@@ -130,16 +130,17 @@ const transformedData = computed(() => {
 onMounted(async () => {
   try {
     const id = route.params.id
-    const response = await axios.get(`http://localhost:5050/api/roadmaps/${id}`)
+    const response = await axios.get( import.meta.env.VITE_API_URL + `/api/roadmaps/${id}`)
     graphData.value = response.data
   } catch (err) {
+    console.error(err)
     error.value = "Erreur lors du chargement des données"
   } finally {
     loading.value = false
   }
 })
 
-const handleNodeClick = (node: any) => {
+const handleNodeClick = (node: unknown) => {
   console.log('Node clicked:', node)
 }
 </script>

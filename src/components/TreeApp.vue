@@ -76,7 +76,7 @@ const createGraph = () => {
     })
 
   svg.call(zoom)
-  
+
   const render = new dagreD3.render()
   render(inner, g)
 

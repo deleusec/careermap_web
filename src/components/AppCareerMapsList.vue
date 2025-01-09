@@ -8,21 +8,31 @@ import AccordionTrigger from './ui/accordion/AccordionTrigger.vue';
 import AppCard from './ui/AppCard.vue';
 import axios from 'axios';
 
+interface Entity {
+  id: number;
+  name: string;
+  description: string;
+}
 
-const categories = ref([]);
+interface Category {
+  id: number;
+  name: string;
+  description: string;
+  entities: Entity[];
+}
+
+const categories = ref<Category[]>([]);
 const router = useRouter();
 
 onMounted(async () => {
   try {
-    // Récupérer les catégories
-    const categoryResponse = await axios.get(
+    const categoryResponse = await axios.get<Category[]>(
       `${import.meta.env.VITE_API_URL}/api/categories`
     );
     const fetchedCategories = categoryResponse.data;
 
-    // Pour chaque catégorie, récupérer les entités associées
-    const promises = fetchedCategories.map(async (category: any) => {
-      const entityResponse = await axios.get(
+    const promises = fetchedCategories.map(async (category) => {
+      const entityResponse = await axios.get<Entity[]>(
         `${import.meta.env.VITE_API_URL}/api/entities/${category.id}`
       );
       return { ...category, entities: entityResponse.data };
@@ -45,7 +55,7 @@ const goToRoadmap = (id: number) => {
     <!-- Colonne de gauche -->
     <div class="w-1/2 h-full flex flex-col items-center justify-center gap-4 p-4 -translate-y-10">
       <AppCard
-        v-for="(category, index) in categories.filter((_, i) => i % 2 === 0)"
+        v-for="(category) in categories.filter((_, i) => i % 2 === 0)"
         :key="category.id"
       >
           <AccordionItem :value="'category-' + category.id">
