@@ -1,133 +1,155 @@
 <script setup lang="ts">
 import * as d3 from 'd3'
+import * as dagreD3 from 'dagre-d3'
+import { onMounted, ref, watch } from 'vue'
 import { gsap } from 'gsap'
-import { onMounted, ref } from 'vue'
 
-const data = ref({
-  name: 'Honey',
-  children: [
-    { name: 'Lucy' },
-    {
-      name: 'Tom',
-      children: [{ name: 'Tony' }, { name: 'Ben' }],
-    },
-  ],
-})
+interface GraphNode {
+  id: string
+  label: string
+  color?: string
+}
 
-const treeContainer = ref(null)
+interface GraphLink {
+  source: string
+  target: string
+}
+
+interface GraphData {
+  nodes: GraphNode[]
+  links: GraphLink[]
+}
+
+const props = defineProps<{
+  data: GraphData
+  nodeWidth?: number
+  nodeHeight?: number
+}>()
+
+const emit = defineEmits<{
+  (e: 'nodeClick', node: GraphNode): void
+}>()
+
+const graphContainer = ref<HTMLElement | null>(null)
+
+const createGraph = () => {
+  // Nettoyer le conteneur
+  d3.select(graphContainer.value).selectAll('*').remove();
+
+  // Créer un nouveau graphe
+  const g = new dagreD3.graphlib.Graph().setGraph({});
+
+  g.setGraph({
+    rankdir: 'TB', // Orientation du graphe : Top-Bottom
+    align: 'UL',
+    nodesep: 50, // Espacement entre les nœuds
+    ranksep: 70, // Espacement entre les niveaux
+    marginx: 20,
+    marginy: 20,
+  });
+
+  // Ajouter les nœuds
+  props.data.nodes.forEach(node => {
+    g.setNode(node.id, {
+      label: node.label,
+      style: `fill: ${node.color || '#3498db'}`,
+      rx: 5,
+      ry: 5,
+      width: props.nodeWidth || 100,
+      height: props.nodeHeight || 40,
+    });
+  });
+
+  // Ajouter les liens
+  props.data.links.forEach(link => {
+    g.setEdge(link.source, link.target, {
+      style: 'stroke: #3498db; stroke-width: 2px; fill: none;',
+      arrowheadStyle: 'fill: #3498db;',
+    });
+  });
+
+  // Créer le SVG
+  const svg = d3
+    .select(graphContainer.value)
+    .append('svg')
+    .attr('width', '100%')
+    .attr('height', '1000px');
+
+  const inner = svg.append('g');
+
+  // Initialiser le renderer
+  const render = new dagreD3.render();
+
+  // Rendre le graphe
+  render(inner, g);
+
+  // Centrer le graphe
+  const graphWidth = g.graph().width || 0;
+  const graphHeight = g.graph().height || 0;
+  const containerWidth = graphContainer.value?.clientWidth || 0;
+  const containerHeight = graphContainer.value?.clientHeight || 0;
+
+  const xOffset = (containerWidth - graphWidth) / 2;
+  const yOffset = (containerHeight - graphHeight) / 2;
+
+  inner.attr('transform', `translate(${xOffset}, ${yOffset})`);
+
+  // Ajouter les animations sur les liens
+  animateLinks(inner);
+};
+
+
+// Animation des liens
+const animateLinks = (inner: any) => {
+  const links = inner.selectAll('.edgePath path');
+
+  links.each(function () {
+    const link = d3.select(this);
+    const totalLength = this.getTotalLength();
+
+    link.attr('stroke-dasharray', totalLength)
+      .attr('stroke-dashoffset', totalLength);
+
+    d3.select(this)
+      .transition()
+      .duration(2000)
+      .ease(d3.easeLinear)
+      .attr('stroke-dashoffset', 0);
+  });
+};
+
 
 onMounted(() => {
-  createTree()
+  createGraph()
 })
 
-const createTree = () => {
-  // Configuration
-  const width = 400
-  const height = 600
-
-  const svg = d3
-    .select(treeContainer.value)
-    .append('svg')
-    .attr('width', width)
-    .attr('height', height)
-
-  const g = svg.append('g').attr('transform', 'translate(50,50)')
-
-  // Crée un layout tree avec D3
-  const tree = d3.tree().size([width - 100, height - 200]) // Dimensions inversées pour un arbre vertical
-  const root : any = d3.hierarchy(data.value)
-  tree(root)
-
-  // Ajout des liens courbes (Vertical)
-  const links = g
-    .selectAll('.link')
-    .data(root.links())
-    .enter()
-    .append('path')
-    .attr('class', 'link')
-    .attr(
-      'd',
-      d3.linkVertical()
-        .x((d: any) => d.x) // Les coordonnées X et Y sont inversées pour l'orientation verticale
-        .y((d: any) => d.y) as any
-    )
-    .attr('stroke', '#aaa')
-    .attr('stroke-width', 2)
-    .attr('fill', 'none')
-    .attr('stroke-dasharray', function () {
-      const length = this.getTotalLength()
-      return `${length} ${length}`
-    })
-    .attr('stroke-dashoffset', function () {
-      return this.getTotalLength()
-    })
-
-  // Ajout des nœuds avec des boîtes rectangulaires
-  const nodes = g
-    .selectAll('.node')
-    .data(root.descendants())
-    .enter()
-    .append('g')
-    .attr('class', 'node')
-    .attr('transform', (d) => `translate(${d.x},${d.y})`) // Inversé pour correspondre à l'orientation verticale
-    .style('opacity', 0)
-    .on('click', (event, d) => handleNodeClick(d)) // Gérer l'événement au clic
-
-  nodes
-    .append('rect')
-    .attr('width', 80)
-    .attr('height', 30)
-    .attr('x', -40)
-    .attr('y', -15)
-    .attr('rx', 6)
-    .attr('ry', 6)
-    .attr('fill', '#3498db')
-
-  nodes
-    .append('text')
-    .attr('dy', 4)
-    .attr('text-anchor', 'middle')
-    .attr('fill', '#fff')
-    .text((d) => d.data.name)
-
-  // Animation
-  links.each(function (d, i) {
-    gsap.to(this, {
-      strokeDashoffset: 0,
-      duration: 1,
-      delay: i * 0.5,
-    })
-  })
-
-  nodes.each(function (d, i) {
-    gsap.to(this, {
-      opacity: 1,
-      duration: 0.5,
-      delay: i * 0.5,
-    })
-  })
-}
-const handleNodeClick = (node) => {
-  alert(`Noeud cliqué : ${node.data.name}`)
-}
+watch(() => props.data, createGraph, { deep: true })
 </script>
 
 <template>
-  <div id="tree-container" ref="treeContainer"></div>
+  <div ref="graphContainer" class="w-full h-full min-h-[600px]"></div>
 </template>
 
-<style>
-#tree-container svg {
-  background-color: #f9f9f9;
-}
-
+<style scoped>
 .node rect {
   stroke: #2c3e50;
   stroke-width: 2px;
+  transition: transform 0.2s ease;
 }
 
-.link {
-  stroke: #aaa;
+.node:hover rect {
+  transform: scale(1.05);
+}
+
+.edgePath path {
+  stroke: #3498db;
+  stroke-width: 2px;
   fill: none;
 }
+
+
+.arrowhead {
+  fill: #3498db;
+}
 </style>
+
