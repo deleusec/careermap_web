@@ -19,6 +19,7 @@ const treeContainer = ref(null)
 onMounted(() => {
   createTree()
 })
+
 const createTree = () => {
   // Configuration
   const width = 400
@@ -106,7 +107,7 @@ const createTree = () => {
     })
   })
 }
-const handleNodeClick = (node: any) => {
+const handleNodeClick = (node) => {
   alert(`Noeud cliqué : ${node.data.name}`)
 }
 </script>

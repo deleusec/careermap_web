@@ -1,35 +1,49 @@
-@import './base.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
-}
+@layer base {
+  :root {
+    --background: #FFFFFF;
+    --foreground: #000000;
+    --card: #ffffff;
+    --card-foreground: #000000;
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
-}
+    --border: #FFFFFF;
+    --input: #000000;
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    --primary: #34aaff;
+    --secondary: #ff65fa;
+
+    --blue: #34aaff;
+    --pink: #ff65fa;
+
+    --destructive: #ff4672;
+    --success: #5aff56;
+
+    --ring: #24272c;
+
+    --radius: 10px;
   }
-}
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+  .dark {
+    --background: #000000;
+    --foreground: #ffffff;
+    --card: #000000;
+    --card-foreground: #ffffff;
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    --border: #000000;
+    --input: #ffffff;
+
+    --primary: #34aaff;
+    --secondary: #ff65fa;
+
+    --blue: #34aaff;
+    --pink: #ff65fa;
+
+    --destructive: #ff4672;
+    --success: #5aff56;
+
+    --ring: #ffffff;
   }
 }

@@ -21,7 +21,8 @@ export const useThemeStore = defineStore('theme', {
       if (saved) {
         this.dark = saved === 'dark'
       } else {
-        this.dark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        // this.dark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        this.dark = false
       }
 
       this.applyTheme()

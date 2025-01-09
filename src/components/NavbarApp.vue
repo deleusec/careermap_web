@@ -1,17 +1,29 @@
 <script setup lang="ts">
+import { useThemeStore } from '@/stores/themeStore';
+import GithubIcon from './icons/GithubIcon.vue';
+import LogoIcon from './icons/LogoIcon.vue';
+import { MoonIcon, SunIcon } from '@heroicons/vue/24/outline'
+
+const themeStore = useThemeStore();
+
+const toggleTheme = () => {
+  themeStore.toggleTheme();
+};
+
 </script>
 
 <template>
   <header>
     <div class="app-name">
-      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="30" height="30" />
+      <LogoIcon class="w-8 h-8" />
       <p>CareerMap</p>
     </div>
     <div class="connection">
       <button>S'inscrire</button>
       <button class="login">Se connecter</button>
-      <img src="@/assets/github.svg" alt="github<" width="15" height="15" />
-      <img src="@/assets/mode.svg" alt="mode" width="15" height="15" />
+      <GithubIcon class="w-6 h-6" />
+      <MoonIcon v-if="!themeStore.dark" class="w-6 h-6" @click="toggleTheme" />
+      <SunIcon v-else class="w-6 h-6" @click="toggleTheme" />
     </div>
   </header>
 </template>
@@ -24,7 +36,7 @@ header {
   position: fixed;
   top: 0;
   left: 0;
-  background-color: white;
+  background-color: var(--background);
   z-index: 100;
   display: flex;
   justify-content: space-between;
