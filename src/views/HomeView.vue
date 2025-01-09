@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import AppLayout from '@/components/layouts/AppLayout.vue';
-import TreeApp from '@/components/TreeApp.vue'
 </script>
 
 <template>
   <AppLayout>
-    <TreeApp />
+    <div class="min-h-[calc(100vh-50px)] ">
+      <p>Home page</p>
+      <RouterLink to="/roadmap/1" class="mt-4 text-blue-500 underline">Go to Roadmap</RouterLink>
+    </div>
   </AppLayout>
 </template>
 
