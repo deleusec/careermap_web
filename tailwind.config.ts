@@ -6,13 +6,19 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['Barlow', 'sans-serif'],
+      },
       colors: {
         'border' : 'var(--border)',
+        'border-foreground' : 'var(--border-foreground)',
+        'text' : 'var(--text)',
+        'text-foreground' : 'var(--text-foreground)',
         'background' : 'var(--background)',
         'foreground' : 'var(--foreground)',
+        'button' : 'var(--button)',
         'primary' : 'var(--primary)',
         'secondary' : 'var(--secondary)',
-
       },
     },
   },

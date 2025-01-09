@@ -1,15 +1,25 @@
+@import './fonts.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply font-sans;
+  }
+  body {
+    @apply font-sans text-foreground bg-background;
+  }
   :root {
     --background: #FFFFFF;
     --foreground: #000000;
     --card: #ffffff;
     --card-foreground: #000000;
 
-    --border: #FFFFFF;
+    --text: #000000;
+    --text-foreground: #ffffff;
+    --border: #4786D0;
+    --border-foreground: #DEE6EF;
     --input: #000000;
 
     --primary: #34aaff;
@@ -46,4 +56,5 @@
 
     --ring: #ffffff;
   }
+
 }

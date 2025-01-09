@@ -32,7 +32,7 @@ export const useThemeStore = defineStore('theme', {
       this.applyTheme()
     },
     applyTheme() {
-      document.body.classList.toggle('dark', this.dark)
+      document.documentElement.classList.toggle('dark', this.dark)
       localStorage.setItem(
         `theme-${this.context}`,
         this.dark ? 'dark' : 'light',
