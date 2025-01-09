@@ -1,6 +1,6 @@
-/** @type {import('tailwindcss').Config} */
 import animate from "tailwindcss-animate"
 
+/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
@@ -34,6 +34,9 @@ export default {
         // Border colors
         'border': 'var(--border)',
         'border-foreground': 'var(--border-foreground)',
+
+        // Gray variations
+        'gray': 'var(--gray)',
 
         // Primary and secondary colors
         'primary': 'var(--primary)',
