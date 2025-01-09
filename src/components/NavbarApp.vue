@@ -21,7 +21,7 @@ const toggleTheme = () => {
     <div class="flex items-center gap-4">
       <AppButton type="primary">S'inscrire</AppButton>
       <AppButton type="secondary">Se connecter</AppButton>
-      <GithubIcon class="w-6 h-6" />
+      <GithubIcon class="w-6 h-6 text-text" />
       <MoonIcon
         v-if="!themeStore.dark"
         class="w-6 h-6 cursor-pointer"
