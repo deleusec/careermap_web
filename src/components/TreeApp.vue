@@ -2,154 +2,154 @@
 import * as d3 from 'd3'
 import * as dagreD3 from 'dagre-d3'
 import { onMounted, ref, watch } from 'vue'
-import { gsap } from 'gsap'
 
-interface GraphNode {
+interface TreeNode {
   id: string
   label: string
   color?: string
+  type?: string
 }
 
-interface GraphLink {
-  source: string
-  target: string
-}
-
-interface GraphData {
-  nodes: GraphNode[]
-  links: GraphLink[]
+interface TreeData {
+  nodes: TreeNode[]
+  links: { source: string; target: string }[]
 }
 
 const props = defineProps<{
-  data: GraphData
+  data: TreeData
   nodeWidth?: number
   nodeHeight?: number
 }>()
 
 const emit = defineEmits<{
-  (e: 'nodeClick', node: GraphNode): void
+  (e: 'nodeClick', node: TreeNode): void
 }>()
 
 const graphContainer = ref<HTMLElement | null>(null)
 
 const createGraph = () => {
-  // Nettoyer le conteneur
-  d3.select(graphContainer.value).selectAll('*').remove();
+  if (!graphContainer.value || !props.data.nodes.length) return
 
-  // Créer un nouveau graphe
-  const g = new dagreD3.graphlib.Graph().setGraph({});
+  d3.select(graphContainer.value).selectAll('*').remove()
 
-  g.setGraph({
-    rankdir: 'TB', // Orientation du graphe : Top-Bottom
-    align: 'UL',
-    nodesep: 50, // Espacement entre les nœuds
-    ranksep: 70, // Espacement entre les niveaux
-    marginx: 20,
-    marginy: 20,
-  });
+  const g = new dagreD3.graphlib.Graph()
+    .setGraph({
+      rankdir: 'LR',
+      nodesep: 70,
+      ranksep: 70,
+      marginx: 40,
+      marginy: 40
+    })
+    .setDefaultEdgeLabel(() => ({}))
 
-  // Ajouter les nœuds
   props.data.nodes.forEach(node => {
     g.setNode(node.id, {
       label: node.label,
-      style: `fill: ${node.color || '#3498db'}`,
-      rx: 5,
-      ry: 5,
-      width: props.nodeWidth || 100,
-      height: props.nodeHeight || 40,
-    });
-  });
+      width: props.nodeWidth || 150,
+      height: props.nodeHeight || 60,
+      rx: 8,
+      ry: 8,
+      style: `fill: ${node.color || '#3498db'}`
+    })
+  })
 
-  // Ajouter les liens
   props.data.links.forEach(link => {
+    console.log(link)
     g.setEdge(link.source, link.target, {
       style: 'stroke: #3498db; stroke-width: 2px; fill: none;',
       arrowheadStyle: 'fill: #3498db;',
-    });
-  });
+    })
+  })
 
-  // Créer le SVG
-  const svg = d3
-    .select(graphContainer.value)
+  const svg = d3.select(graphContainer.value)
     .append('svg')
     .attr('width', '100%')
-    .attr('height', '1000px');
+    .attr('height', '100%')
+    .attr('viewBox', '0 0 1200 800')
+    .attr('preserveAspectRatio', 'xMidYMid meet')
 
-  const inner = svg.append('g');
+  const inner = svg.append('g')
 
-  // Initialiser le renderer
-  const render = new dagreD3.render();
+  const zoom = d3.zoom()
+    .on('zoom', (event) => {
+      inner.attr('transform', event.transform)
+    })
 
-  // Rendre le graphe
-  render(inner, g);
+  svg.call(zoom)
+  
+  const render = new dagreD3.render()
+  render(inner, g)
 
-  // Centrer le graphe
-  const graphWidth = g.graph().width || 0;
-  const graphHeight = g.graph().height || 0;
-  const containerWidth = graphContainer.value?.clientWidth || 0;
-  const containerHeight = graphContainer.value?.clientHeight || 0;
+  animateLinks(inner)
 
-  const xOffset = (containerWidth - graphWidth) / 2;
-  const yOffset = (containerHeight - graphHeight) / 2;
+  const initialScale = 0.75
+  svg.call(zoom.transform, d3.zoomIdentity
+    .translate((1200 - g.graph().width * initialScale) / 2, 20)
+    .scale(initialScale))
 
-  inner.attr('transform', `translate(${xOffset}, ${yOffset})`);
-
-  // Ajouter les animations sur les liens
-  animateLinks(inner);
-};
-
-
+  inner.selectAll('g.node')
+    .on('click', (_, d) => {
+      const node = props.data.nodes.find(n => n.id === d)
+      if (node) emit('nodeClick', node)
+    })
+    .attr('cursor', 'pointer')
+}
 // Animation des liens
 const animateLinks = (inner: any) => {
-  const links = inner.selectAll('.edgePath path');
+  const links = inner.selectAll('.edgePath path')
+    .style('opacity', 1) // Assure la visibilité
+    .attr('stroke-dasharray', function() {
+      return this.getTotalLength() + ' ' + this.getTotalLength();
+    })
+    .attr('stroke-dashoffset', function() {
+      return this.getTotalLength();
+    });
 
-  links.each(function () {
-    const link = d3.select(this);
-    const totalLength = this.getTotalLength();
-
-    link.attr('stroke-dasharray', totalLength)
-      .attr('stroke-dashoffset', totalLength);
-
-    d3.select(this)
-      .transition()
-      .duration(2000)
-      .ease(d3.easeLinear)
-      .attr('stroke-dashoffset', 0);
-  });
+  links.transition()
+    .duration(2000)
+    .ease(d3.easeLinear)
+    .attr('stroke-dashoffset', 0);
 };
 
-
-onMounted(() => {
-  createGraph()
-})
-
+onMounted(createGraph)
 watch(() => props.data, createGraph, { deep: true })
 </script>
 
 <template>
-  <div ref="graphContainer" class="w-full h-full min-h-[600px]"></div>
+  <div ref="graphContainer" class="w-full h-[800px]" />
 </template>
 
 <style scoped>
 .node rect {
   stroke: #2c3e50;
   stroke-width: 2px;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .node:hover rect {
+  filter: brightness(1.1);
   transform: scale(1.05);
 }
 
-.edgePath path {
-  stroke: #3498db;
-  stroke-width: 2px;
-  fill: none;
+.node text {
+  font-size: 14px;
+  font-weight: 500;
+  fill: white;
 }
 
+.edgePath path {
+  stroke: #95a5a6;
+  stroke-width: 2px;
+  transition: stroke 0.3s ease;
+}
+
+.edgePath:hover path {
+  stroke: #3498db;
+  stroke-width: 3px;
+}
 
 .arrowhead {
-  fill: #3498db;
+  fill: #95a5a6;
 }
 </style>
 
