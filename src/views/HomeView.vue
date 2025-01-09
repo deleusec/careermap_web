@@ -58,5 +58,26 @@ const onSearch = (query: string) => {
         </div>
       </div>
     </div>
+  <div class="py-24 px-4 text-center">
+  <!-- Icône coeur -->
+    <div class="mb-6">
+      <div class="w-12 h-12 mx-auto rounded-lg flex items-center justify-center">
+        <img
+          src="@/assets/images/heart.png"
+          class="top-1/2"
+        />
+      </div>
+  </div>
+
+  <!-- Titre -->
+  <h2 class="text-text text-3xl font-semibold mb-4">
+    Gratuit et Open Source
+  </h2>
+
+  <!-- Sous-titre -->
+  <p class="text-text text-gray-600 max-w-2xl mx-auto">
+    Un outil accessible à tous, construit par la communauté pour la communauté.
+  </p>
+</div>
   </AppLayout>
 </template>
