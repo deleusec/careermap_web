@@ -41,44 +41,13 @@ const goToRoadmap = (id: number) => {
 </script>
 
 <template>
-  <div class="w-full h-full max-w-[1200px] flex items-center justify-center">
+  <Accordion type="single" collapsible class="w-full h-auto max-w-[1200px] flex items-center justify-center">
     <!-- Colonne de gauche -->
     <div class="w-1/2 h-full flex flex-col items-center justify-center gap-4 p-4 -translate-y-10">
       <AppCard
         v-for="(category, index) in categories.filter((_, i) => i % 2 === 0)"
         :key="category.id"
       >
-        <Accordion type="single" collapsible>
-          <AccordionItem :value="'category-' + category.id">
-            <!-- Titre de la catégorie -->
-            <AccordionTrigger>{{ category.name }}</AccordionTrigger>
-            <AccordionContent>
-              <p class="text-gray-500">{{ category.description }}</p>
-              <!-- Liste des entités -->
-              <ul>
-                <li
-                  v-for="entity in category.entities"
-                  :key="entity.id"
-                  @click="goToRoadmap(entity.id)"
-                  class="cursor-pointer hover:underline text-primary mt-2"
-                >
-                  <strong>{{ entity.name }}</strong>
-                  <p class="text-sm text-gray-400">{{ entity.description }}</p>
-                </li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </AppCard>
-    </div>
-
-    <!-- Colonne de droite -->
-    <div class="w-1/2 h-full flex flex-col items-center justify-center gap-4 p-4 translate-y-10">
-      <AppCard
-        v-for="(category, index) in categories.filter((_, i) => i % 2 !== 0)"
-        :key="index"
-      >
-        <Accordion type="single" collapsible>
           <AccordionItem :value="'category-' + category.id">
             <!-- Titre de la catégorie -->
             <AccordionTrigger>{{ category.name }}</AccordionTrigger>
@@ -98,10 +67,38 @@ const goToRoadmap = (id: number) => {
               </ul>
             </AccordionContent>
           </AccordionItem>
-        </Accordion>
       </AppCard>
     </div>
-  </div>
+
+    <!-- Colonne de droite -->
+    <div class="w-1/2 h-full flex flex-col items-center justify-center gap-4 p-4 translate-y-10">
+      <AppCard
+        v-for="(category, index) in categories.filter((_, i) => i % 2 !== 0)"
+        :key="index"
+      >
+
+          <AccordionItem :value="'category-' + category.id">
+            <!-- Titre de la catégorie -->
+            <AccordionTrigger>{{ category.name }}</AccordionTrigger>
+            <AccordionContent>
+              <p class="text-gray-500">{{ category.description }}</p>
+              <!-- Liste des entités -->
+              <ul>
+                <li
+                  v-for="entity in category.entities"
+                  :key="entity.id"
+                  @click="goToRoadmap(entity.id)"
+                  class="cursor-pointer hover:underline text-text-foreground mt-2"
+                >
+                  <strong>{{ entity.name }}</strong>
+                  <p class="text-sm text-gray-400">{{ entity.description }}</p>
+                </li>
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+      </AppCard>
+    </div>
+  </Accordion>
 </template>
 
 <style scoped>
