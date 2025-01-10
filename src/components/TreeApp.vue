@@ -1,11 +1,19 @@
 <template>
-  <div ref="graphContainer" class="w-full h-[800px]" />
+  <div>
+    <div class="mb-4">
+      <Button @click="toggleOrientation" class="ml-4">
+        {{ orientation === 'LR' ? 'Vue Verticale' : 'Vue Horizontale' }}
+      </Button>
+    </div>
+    <div ref="graphContainer" class="w-full h-[800px]" />
+  </div>
 </template>
 
 <script setup lang="ts">
 import * as d3 from 'd3'
 import * as dagreD3 from 'dagre-d3'
 import { onMounted, ref, watch } from 'vue'
+import { Button } from "@/components/ui/button"
 
 interface TreeNode {
   id: string
@@ -44,6 +52,12 @@ const emit = defineEmits<{
 }>()
 
 const graphContainer = ref<HTMLElement | null>(null)
+const orientation = ref<'TB' | 'LR'>('LR') // TB = Top to Bottom, LR = Left to Right
+
+const toggleOrientation = () => {
+  orientation.value = orientation.value === 'LR' ? 'TB' : 'LR'
+  createGraph()
+}
 
 const createGraph = () => {
   if (!graphContainer.value || !props.data.nodes.length) return
@@ -52,7 +66,7 @@ const createGraph = () => {
 
   const g = new dagreD3.graphlib.Graph()
     .setGraph({
-      rankdir: 'LR',
+      rankdir: orientation.value,
       nodesep: 70,
       ranksep: 70,
       marginx: 40,
@@ -141,6 +155,7 @@ const animateLinks = (inner: any) => {
 
 onMounted(createGraph)
 watch(() => props.data, createGraph, { deep: true })
+watch(() => orientation.value, createGraph)
 </script>
 
 <style scoped>
@@ -176,4 +191,3 @@ watch(() => props.data, createGraph, { deep: true })
   fill: #95a5a6;
 }
 </style>
-
