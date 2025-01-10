@@ -1,99 +1,104 @@
 <template>
-  <div class="p-6 relative">
-    <div v-if="loading" class="text-center">
-      Chargement...
-    </div>
-    <div v-else-if="error" class="text-red-500">
-      {{ error }}
-    </div>
-    <div v-else>
-      <h1 class="text-2xl mb-4">{{ graphData?.name }}</h1>
-      <AppTree
-        :data="transformedData"
-        :node-width="150"
-        :node-height="60"
-        @node-click="handleNodeClick"
-        @node-hover="handleNodeHover"
-      />
-
-      <!-- Popup pour le hover -->
-      <div v-if="hoveredNode && showPopup"
-           class="popup absolute bg-foreground rounded-lg shadow-lg p-4 z-10"
-           :style="popupStyle">
-        <h3 class="text-lg font-semibold mb-2 text-text-foreground">{{ hoveredNode.label }}</h3>
-        <p class="text-text-foreground">{{ hoveredNode.description }}</p>
-        <p v-if="hoveredNode.additionalInfo?.duration" class="mt-2 text-text-foreground">
-          Durée : {{ hoveredNode.additionalInfo.duration }}
-        </p>
+  <AppLayout class="relative">
+    <div class="p-6">
+      <div v-if="loading" class="text-center">Chargement...</div>
+      <div v-else-if="error" class="text-red-500">
+        {{ error }}
       </div>
+      <div v-else>
+        <h1 class="text-2xl mb-4">{{ graphData?.name }}</h1>
+        <AppTree
+          :data="transformedData"
+          :node-width="150"
+          :node-height="60"
+          @node-click="handleNodeClick"
+          @node-hover="handleNodeHover"
+        />
 
-      <Drawer :open="isDrawerOpen" @close="isDrawerOpen = false">
-        <DrawerContent :class="{ 'right-side': isRightSide }">
-          <DrawerHeader>
-            <DrawerTitle>{{ selectedNode?.label }}</DrawerTitle>
-            <DrawerDescription>{{ selectedNode?.description }}</DrawerDescription>
-          </DrawerHeader>
+        <!-- Popup pour le hover -->
+        <div
+          v-if="hoveredNode && showPopup"
+          class="popup absolute bg-foreground rounded-lg shadow-lg p-4 z-10"
+          :style="popupStyle"
+        >
+          <h3 class="text-lg font-semibold mb-2 text-text-foreground">{{ hoveredNode.label }}</h3>
+          <p class="text-text-foreground">{{ hoveredNode.description }}</p>
+          <p v-if="hoveredNode.additionalInfo?.duration" class="mt-2 text-text-foreground">
+            Durée : {{ hoveredNode.additionalInfo.duration }}
+          </p>
+        </div>
 
-          <div class="p-4">
-            <div class="mb-4">
-              <h3 class="text-lg font-semibold mb-2">Type</h3>
-              <p class="text-gray-600">{{ selectedNode?.type }}</p>
+        <Drawer :open="isDrawerOpen" @close="isDrawerOpen = false">
+          <DrawerContent :class="{ 'right-side': isRightSide }">
+            <DrawerHeader>
+              <DrawerTitle>{{ selectedNode?.label }}</DrawerTitle>
+              <DrawerDescription>{{ selectedNode?.description }}</DrawerDescription>
+            </DrawerHeader>
+
+            <div class="p-4">
+              <div class="mb-4">
+                <h3 class="text-lg font-semibold mb-2">Type</h3>
+                <p class="text-gray-600">{{ selectedNode?.type }}</p>
+              </div>
+
+              <div class="mb-4">
+                <h3 class="text-lg font-semibold mb-2">Catégorie</h3>
+                <p class="text-gray-600">{{ selectedNode?.category?.name }}</p>
+              </div>
+
+              <div v-if="selectedNode?.additionalInfo" class="space-y-4">
+                <!-- Durée -->
+                <div v-if="selectedNode.additionalInfo.duration">
+                  <h3 class="text-lg font-semibold mb-2">Durée</h3>
+                  <p class="text-gray-600">{{ selectedNode.additionalInfo.duration }}</p>
+                </div>
+
+                <!-- Salaire moyen -->
+                <div v-if="selectedNode.additionalInfo.average_salary">
+                  <h3 class="text-lg font-semibold mb-2">Salaire moyen</h3>
+                  <p class="text-gray-600">{{ selectedNode.additionalInfo.average_salary }}</p>
+                </div>
+
+                <!-- Compétences requises -->
+                <div v-if="selectedNode.additionalInfo.required_skills?.length">
+                  <h3 class="text-lg font-semibold mb-2">Compétences requises</h3>
+                  <ul class="list-disc list-inside text-gray-600">
+                    <li v-for="skill in selectedNode.additionalInfo.required_skills" :key="skill">
+                      {{ skill }}
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Prérequis -->
+                <div v-if="selectedNode.additionalInfo.prerequisites?.length">
+                  <h3 class="text-lg font-semibold mb-2">Prérequis</h3>
+                  <ul class="list-disc list-inside text-gray-600">
+                    <li v-for="prereq in selectedNode.additionalInfo.prerequisites" :key="prereq">
+                      {{ prereq }}
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Spécialités -->
+                <div v-if="selectedNode.additionalInfo.specialities?.length">
+                  <h3 class="text-lg font-semibold mb-2">Spécialités</h3>
+                  <ul class="list-disc list-inside text-gray-600">
+                    <li v-for="spec in selectedNode.additionalInfo.specialities" :key="spec">
+                      {{ spec }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
 
-            <div class="mb-4">
-              <h3 class="text-lg font-semibold mb-2">Catégorie</h3>
-              <p class="text-gray-600">{{ selectedNode?.category?.name }}</p>
-            </div>
-
-            <div v-if="selectedNode?.additionalInfo" class="space-y-4">
-              <!-- Durée -->
-              <div v-if="selectedNode.additionalInfo.duration">
-                <h3 class="text-lg font-semibold mb-2">Durée</h3>
-                <p class="text-gray-600">{{ selectedNode.additionalInfo.duration }}</p>
-              </div>
-
-              <!-- Salaire moyen -->
-              <div v-if="selectedNode.additionalInfo.average_salary">
-                <h3 class="text-lg font-semibold mb-2">Salaire moyen</h3>
-                <p class="text-gray-600">{{ selectedNode.additionalInfo.average_salary }}</p>
-              </div>
-
-              <!-- Compétences requises -->
-              <div v-if="selectedNode.additionalInfo.required_skills?.length">
-                <h3 class="text-lg font-semibold mb-2">Compétences requises</h3>
-                <ul class="list-disc list-inside text-gray-600">
-                  <li v-for="skill in selectedNode.additionalInfo.required_skills"
-                      :key="skill">{{ skill }}</li>
-                </ul>
-              </div>
-
-              <!-- Prérequis -->
-              <div v-if="selectedNode.additionalInfo.prerequisites?.length">
-                <h3 class="text-lg font-semibold mb-2">Prérequis</h3>
-                <ul class="list-disc list-inside text-gray-600">
-                  <li v-for="prereq in selectedNode.additionalInfo.prerequisites"
-                      :key="prereq">{{ prereq }}</li>
-                </ul>
-              </div>
-
-              <!-- Spécialités -->
-              <div v-if="selectedNode.additionalInfo.specialities?.length">
-                <h3 class="text-lg font-semibold mb-2">Spécialités</h3>
-                <ul class="list-disc list-inside text-gray-600">
-                  <li v-for="spec in selectedNode.additionalInfo.specialities"
-                      :key="spec">{{ spec }}</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <DrawerFooter>
-            <Button class="bg-foreground" @click="isDrawerOpen = false">Fermer</Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+            <DrawerFooter>
+              <Button class="bg-foreground" @click="isDrawerOpen = false">Fermer</Button>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </div>
     </div>
-  </div>
+  </AppLayout>
 </template>
 
 <script setup lang="ts">
@@ -107,9 +112,10 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
-  DrawerFooter
-} from "@/components/ui/drawer"
-import { Button } from "@/components/ui/button"
+  DrawerFooter,
+} from '@/components/ui/drawer'
+import { Button } from '@/components/ui/button'
+import AppLayout from '@/components/layouts/AppLayout.vue'
 
 interface Category {
   id: number
@@ -163,25 +169,27 @@ const getColorByType = (type: string): string => {
   const colors = {
     formation: '#3498db',
     bac: '#e74c3c',
-    career: '#2ecc71'
+    career: '#2ecc71',
   }
   return colors[type as keyof typeof colors] || '#95a5a6'
 }
 
 const extractNodes = (node: Node): TreeNode[] => {
-  const nodes: TreeNode[] = [{
-    id: node.id.toString(),
-    label: node.name,
-    color: getColorByType(node.type),
-    type: node.type,
-    description: node.description,
-    additionalInfo: node.additionalInfo,
-    category: node.category
-  }]
+  const nodes: TreeNode[] = [
+    {
+      id: node.id.toString(),
+      label: node.name,
+      color: getColorByType(node.type),
+      type: node.type,
+      description: node.description,
+      additionalInfo: node.additionalInfo,
+      category: node.category,
+    },
+  ]
 
   const processNodes = (n: Node) => {
     if (n.children) {
-      n.children.forEach(child => {
+      n.children.forEach((child) => {
         nodes.push({
           id: child.id.toString(),
           label: child.name,
@@ -189,13 +197,13 @@ const extractNodes = (node: Node): TreeNode[] => {
           type: child.type,
           description: child.description,
           additionalInfo: child.additionalInfo,
-          category: child.category
+          category: child.category,
         })
         processNodes(child)
       })
     }
     if (n.parents) {
-      n.parents.forEach(parent => {
+      n.parents.forEach((parent) => {
         nodes.push({
           id: parent.id.toString(),
           label: parent.name,
@@ -203,7 +211,7 @@ const extractNodes = (node: Node): TreeNode[] => {
           type: parent.type,
           description: parent.description,
           additionalInfo: parent.additionalInfo,
-          category: parent.category
+          category: parent.category,
         })
         processNodes(parent)
       })
@@ -211,27 +219,27 @@ const extractNodes = (node: Node): TreeNode[] => {
   }
 
   processNodes(node)
-  return [...new Map(nodes.map(n => [n.id, n])).values()]
+  return [...new Map(nodes.map((n) => [n.id, n])).values()]
 }
 
-const extractLinks = (node: Node): { source: string; target: string; }[] => {
-  const links: { source: string; target: string; }[] = []
+const extractLinks = (node: Node): { source: string; target: string }[] => {
+  const links: { source: string; target: string }[] = []
 
   const processLinks = (n: Node) => {
     if (n.children) {
-      n.children.forEach(child => {
+      n.children.forEach((child) => {
         links.push({
           source: n.id.toString(),
-          target: child.id.toString()
+          target: child.id.toString(),
         })
         processLinks(child)
       })
     }
     if (n.parents) {
-      n.parents.forEach(parent => {
+      n.parents.forEach((parent) => {
         links.push({
           source: parent.id.toString(),
-          target: n.id.toString()
+          target: n.id.toString(),
         })
         processLinks(parent)
       })
@@ -247,7 +255,7 @@ const transformedData = computed(() => {
 
   return {
     nodes: extractNodes(graphData.value),
-    links: extractLinks(graphData.value)
+    links: extractLinks(graphData.value),
   }
 })
 
@@ -264,7 +272,7 @@ const handleNodeHover = (event: MouseEvent, node: TreeNode | null) => {
     const rect = graphContainer.value.getBoundingClientRect()
     popupPosition.value = {
       x: event.clientX - rect.left,
-      y: event.clientY - rect.top
+      y: event.clientY - rect.top,
     }
   }
 }
@@ -281,7 +289,7 @@ const handleNodeClick = (node: TreeNode, event: MouseEvent) => {
 
 const popupStyle = computed(() => ({
   left: `${popupPosition.value.x + 20}px`,
-  top: `${popupPosition.value.y + 20}px`
+  top: `${popupPosition.value.y + 20}px`,
 }))
 
 onMounted(async () => {
@@ -291,7 +299,7 @@ onMounted(async () => {
     graphData.value = response.data
   } catch (err) {
     console.error(err)
-    error.value = "Erreur lors du chargement des données"
+    error.value = 'Erreur lors du chargement des données'
   } finally {
     loading.value = false
   }
