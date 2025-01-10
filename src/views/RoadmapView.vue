@@ -18,11 +18,11 @@
 
       <!-- Popup pour le hover -->
       <div v-if="hoveredNode && showPopup"
-           class="popup absolute bg-white rounded-lg shadow-lg p-4 z-10"
+           class="popup absolute bg-foreground rounded-lg shadow-lg p-4 z-10"
            :style="popupStyle">
-        <h3 class="text-lg font-semibold mb-2">{{ hoveredNode.label }}</h3>
-        <p class="text-gray-600">{{ hoveredNode.description }}</p>
-        <p v-if="hoveredNode.additionalInfo?.duration" class="mt-2">
+        <h3 class="text-lg font-semibold mb-2 text-text-foreground">{{ hoveredNode.label }}</h3>
+        <p class="text-text-foreground">{{ hoveredNode.description }}</p>
+        <p v-if="hoveredNode.additionalInfo?.duration" class="mt-2 text-text-foreground">
           Durée : {{ hoveredNode.additionalInfo.duration }}
         </p>
       </div>
