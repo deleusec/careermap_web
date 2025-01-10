@@ -17,7 +17,7 @@
       />
 
       <!-- Popup pour le hover -->
-      <div v-if="hoveredNode && showPopup" 
+      <div v-if="hoveredNode && showPopup"
            class="popup absolute bg-white rounded-lg shadow-lg p-4 z-10"
            :style="popupStyle">
         <h3 class="text-lg font-semibold mb-2">{{ hoveredNode.label }}</h3>
@@ -33,7 +33,7 @@
             <DrawerTitle>{{ selectedNode?.label }}</DrawerTitle>
             <DrawerDescription>{{ selectedNode?.description }}</DrawerDescription>
           </DrawerHeader>
-          
+
           <div class="p-4">
             <div class="mb-4">
               <h3 class="text-lg font-semibold mb-2">Type</h3>
@@ -62,7 +62,7 @@
               <div v-if="selectedNode.additionalInfo.required_skills?.length">
                 <h3 class="text-lg font-semibold mb-2">Compétences requises</h3>
                 <ul class="list-disc list-inside text-gray-600">
-                  <li v-for="skill in selectedNode.additionalInfo.required_skills" 
+                  <li v-for="skill in selectedNode.additionalInfo.required_skills"
                       :key="skill">{{ skill }}</li>
                 </ul>
               </div>
@@ -71,7 +71,7 @@
               <div v-if="selectedNode.additionalInfo.prerequisites?.length">
                 <h3 class="text-lg font-semibold mb-2">Prérequis</h3>
                 <ul class="list-disc list-inside text-gray-600">
-                  <li v-for="prereq in selectedNode.additionalInfo.prerequisites" 
+                  <li v-for="prereq in selectedNode.additionalInfo.prerequisites"
                       :key="prereq">{{ prereq }}</li>
                 </ul>
               </div>
@@ -80,7 +80,7 @@
               <div v-if="selectedNode.additionalInfo.specialities?.length">
                 <h3 class="text-lg font-semibold mb-2">Spécialités</h3>
                 <ul class="list-disc list-inside text-gray-600">
-                  <li v-for="spec in selectedNode.additionalInfo.specialities" 
+                  <li v-for="spec in selectedNode.additionalInfo.specialities"
                       :key="spec">{{ spec }}</li>
                 </ul>
               </div>
@@ -88,7 +88,7 @@
           </div>
 
           <DrawerFooter>
-            <Button @click="isDrawerOpen = false">Fermer</Button>
+            <Button class="bg-foreground" @click="isDrawerOpen = false">Fermer</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -256,10 +256,10 @@ const handleNodeHover = (event: MouseEvent, node: TreeNode | null) => {
     showPopup.value = false
     return
   }
-  
+
   hoveredNode.value = node
   showPopup.value = true
-  
+
   if (event && graphContainer.value) {
     const rect = graphContainer.value.getBoundingClientRect()
     popupPosition.value = {
