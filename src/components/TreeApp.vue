@@ -1,3 +1,7 @@
+<template>
+  <div ref="graphContainer" class="w-full h-[800px]" />
+</template>
+
 <script setup lang="ts">
 import * as d3 from 'd3'
 import * as dagreD3 from 'dagre-d3'
@@ -8,6 +12,19 @@ interface TreeNode {
   label: string
   color?: string
   type?: string
+  description?: string
+  additionalInfo?: {
+    duration?: string
+    prerequisites?: string[]
+    average_salary?: string
+    required_skills?: string[]
+    specialities?: string[]
+    recommended_background?: string[]
+  }
+  category?: {
+    id: number
+    name: string
+  }
 }
 
 interface TreeData {
@@ -22,7 +39,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'nodeClick', node: TreeNode): void
+  (e: 'nodeClick', node: TreeNode, event: MouseEvent): void
+  (e: 'node-hover', event: MouseEvent, node: TreeNode | null): void
 }>()
 
 const graphContainer = ref<HTMLElement | null>(null)
@@ -54,7 +72,6 @@ const createGraph = () => {
   })
 
   props.data.links.forEach(link => {
-    console.log(link)
     g.setEdge(link.source, link.target, {
       style: 'stroke: #3498db; stroke-width: 2px; fill: none;',
       arrowheadStyle: 'fill: #3498db;',
@@ -88,16 +105,27 @@ const createGraph = () => {
     .scale(initialScale))
 
   inner.selectAll('g.node')
-    .on('click', (_, d) => {
+    .on('mouseover', (event, d) => {
       const node = props.data.nodes.find(n => n.id === d)
-      if (node) emit('nodeClick', node)
+      if (node) {
+        emit('node-hover', event, node)
+      }
+    })
+    .on('mouseout', (event) => {
+      emit('node-hover', event, null)
+    })
+    .on('click', (event, d) => {
+      const node = props.data.nodes.find(n => n.id === d)
+      if (node) {
+        emit('nodeClick', node, event)
+      }
     })
     .attr('cursor', 'pointer')
 }
-// Animation des liens
+
 const animateLinks = (inner: any) => {
   const links = inner.selectAll('.edgePath path')
-    .style('opacity', 1) // Assure la visibilité
+    .style('opacity', 1)
     .attr('stroke-dasharray', function() {
       return this.getTotalLength() + ' ' + this.getTotalLength();
     })
@@ -109,15 +137,11 @@ const animateLinks = (inner: any) => {
     .duration(2000)
     .ease(d3.easeLinear)
     .attr('stroke-dashoffset', 0);
-};
+}
 
 onMounted(createGraph)
 watch(() => props.data, createGraph, { deep: true })
 </script>
-
-<template>
-  <div ref="graphContainer" class="w-full h-[800px]" />
-</template>
 
 <style scoped>
 .node rect {

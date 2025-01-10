@@ -37,6 +37,7 @@ onMounted(async () => {
       );
       return { ...category, entities: entityResponse.data };
     });
+    console.log(promises)
 
     categories.value = await Promise.all(promises);
   } catch (error) {
