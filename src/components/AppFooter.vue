@@ -4,20 +4,20 @@ const currentYear = ref(new Date().getFullYear())
 </script>
 
 <template>
-  <footer class="bg-foreground py-16 px-4">
+  <footer class="bg-foreground dark:bg-background pt-16 pb-2 px-4 border-t border-border">
     <div class="max-w-7xl mx-auto">
       <!-- Newsletter Section -->
       <div class="text-left justify-center gap-64 mx-auto mb-16 flex items-center">
         <div class="">
-          <h2 class="text-text-foreground text-3xl font-medium mb-2">Restez connectés avec nous</h2>
-          <p class="text-text-foreground">Toutes les actualités Careermap, directement par mail.</p>
+          <h2 class="text-text-foreground dark:text-text text-3xl font-medium mb-2">Restez connectés avec nous</h2>
+          <p class="text-text-foreground dark:text-text">Toutes les actualités Careermap, directement par mail.</p>
         </div>
         <!-- Email Form -->
         <div class="w-80 max-h-10 flex">
           <input
             type="email"
             placeholder="Adresse mail"
-            class="flex-1 px-4 py-2 rounded-l-full bg-foreground text-border border border-border focus:outline-none focus:border-border"
+            class="flex-1 px-4 py-2 rounded-l-full bg-foreground dark:bg-background text-border border border-border focus:outline-none focus:border-border"
           />
           <button
             class="bg-zinc-800 px-6 py-2 rounded-r-full border border-l-transparent border-border"
@@ -39,7 +39,7 @@ const currentYear = ref(new Date().getFullYear())
       </div>
 
       <!-- Copyright -->
-      <div class="text-center text-text-foreground text-sm">
+      <div class="text-center text-text-foreground dark:text-text text-sm">
         Released under the MIT License. (e1b520c4) - Copyright © {{ currentYear }}
       </div>
     </div>
